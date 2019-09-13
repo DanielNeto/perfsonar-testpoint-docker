@@ -75,12 +75,15 @@ COPY rsyslog/owamp-syslog.conf /etc/rsyslog.d/owamp-syslog.conf
 RUN mkdir -p /var/log/supervisor 
 ADD supervisord.conf /etc/supervisord.conf
 
+COPY entrypoint.sh /usr/local/bin/
+
 # The following ports are used:
 # pScheduler: 443
 # owamp:861, 8760-9960
 EXPOSE 443 861 8760-9960
 
-# add pid directory, logging, and postgres directory
-VOLUME ["/var/run", "/var/lib/pgsql", "/var/log", "/etc/rsyslog.d" ]
+# add logging, and postgres directory
+VOLUME ["/var/lib/pgsql", "/var/log"]
 
+ENTRYPOINT [ "entrypoint.sh" ]
 CMD /usr/bin/supervisord -c /etc/supervisord.conf
