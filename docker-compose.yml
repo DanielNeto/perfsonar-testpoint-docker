@@ -1,0 +1,26 @@
+version: "3.7"
+services:
+  testpoint:
+    build:
+      context: ./
+    environment: 
+      - container=docker
+    expose: 
+      - "443"
+      - "861"
+      - "862"
+      - "5000-5001"
+      - "5101"
+      - "5201"
+      - "8760-9960"
+      - "18760-19960"
+    network_mode: "host"
+    restart: unless-stopped
+    tmpfs: 
+      - /run
+      - /tmp
+    volumes:
+      - /var/lib/pgsql
+      - /var/log
+    privileged: true
+    tty: true

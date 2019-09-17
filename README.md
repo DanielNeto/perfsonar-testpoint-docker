@@ -25,6 +25,9 @@ After editing the configuration files, exit the container and commit the change.
 Run the container:
 >docker run --privileged -d --tmpfs /tmp --tmpfs /run --net=host perfsonar/testpoint
 
+Run the container using docker-compose:
+>docker-compose up -d testpoint
+
 ## Testing
 
 Test the perfSONAR tools from another host with pscheduler and owamp installed:
