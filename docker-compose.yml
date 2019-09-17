@@ -3,27 +3,6 @@ services:
   testpoint:
     build:
       context: ./
-    environment: 
-      - container=docker
-    expose: 
-      - "443"
-      - "861"
-      - "8760-9960"
-    network_mode: "host"
-    restart: unless-stopped
-    tmpfs: 
-      - /run
-      - /run/lock
-      - /tmp
-    volumes:
-      - /var/lib/pgsql
-      - /var/log
-    privileged: true
-    tty: true
-  systemd:
-    build:
-      context: ./
-      dockerfile: Dockerfile-systemd
     #cap_add: 
     #  - SYS_ADMIN
     environment: 

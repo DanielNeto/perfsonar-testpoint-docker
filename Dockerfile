@@ -1,13 +1,13 @@
 # perfSONAR Testpoint
 
-FROM centos:centos7
+FROM centos/systemd
 LABEL maintainer="perfSONAR <perfsonar-user@perfsonar.net>"
+
 
 RUN yum -y install \
     epel-release \
     http://software.internet2.edu/rpms/el7/x86_64/latest/packages/perfSONAR-repo-0.9-1.noarch.rpm \
     && yum -y install \
-    supervisor \
     rsyslog \
     net-tools \
     sysstat \
@@ -58,7 +58,6 @@ COPY postgresql/pscheduler-build-database /tmp/pscheduler-build-database
 RUN  /tmp/pscheduler-build-database && \
     rm -f /tmp/pscheduler-build-database
 
-
 # -----------------------------------------------------------------------------
 
 # Rsyslog
@@ -69,13 +68,21 @@ COPY rsyslog/listen.conf /etc/rsyslog.d/listen.conf
 COPY rsyslog/python-pscheduler.conf /etc/rsyslog.d/python-pscheduler.conf
 COPY rsyslog/owamp-syslog.conf /etc/rsyslog.d/owamp-syslog.conf
 
-
 # -----------------------------------------------------------------------------
 
-RUN mkdir -p /var/log/supervisor 
-ADD supervisord.conf /etc/supervisord.conf
+# Systemd defines that it expects SIGRTMIN+3 for graceful shutdown
+# https://www.commandlinux.com/man-page/man1/systemd.1.html#lbAH
+STOPSIGNAL SIGRTMIN+3
 
-COPY entrypoint.sh /usr/local/bin/
+# setting systemd boot target
+# multi-user.target: analogous to runlevel 3, Text mode
+RUN systemctl set-default multi-user.target
+
+# those require extra volumes and capabilities to work, are they really necessary?
+# ref: http://libfuse.github.io/doxygen/
+# ref: https://wiki.debian.org/Hugepages
+# obs> masked is a stronger disabled state
+RUN systemctl mask dev-hugepages.mount sys-fs-fuse-connections.mount
 
 # The following ports are used:
 # pScheduler: 443
@@ -84,6 +91,3 @@ EXPOSE 443 861 8760-9960
 
 # add logging, and postgres directory
 VOLUME ["/var/lib/pgsql", "/var/log"]
-
-ENTRYPOINT [ "entrypoint.sh" ]
-CMD /usr/bin/supervisord -c /etc/supervisord.conf
