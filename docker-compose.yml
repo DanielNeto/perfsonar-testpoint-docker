@@ -10,7 +10,12 @@ services:
     expose: 
       - "443"
       - "861"
+      - "862"
+      - "5000-5001"
+      - "5101"
+      - "5201"
       - "8760-9960"
+      - "18760-19960"
     network_mode: "host"
     restart: unless-stopped
     security_opt: 
