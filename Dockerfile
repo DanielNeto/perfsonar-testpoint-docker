@@ -1,19 +1,12 @@
 # perfSONAR Testpoint
 
-FROM centos/systemd
+FROM danielneto/systemd:centos7
 LABEL maintainer="perfSONAR <perfsonar-user@perfsonar.net>"
-
 
 RUN yum -y install \
     epel-release \
     http://software.internet2.edu/rpms/el7/x86_64/latest/packages/perfSONAR-repo-0.9-1.noarch.rpm \
     && yum -y install \
-    rsyslog \
-    net-tools \
-    sysstat \
-    iproute \
-    bind-utils \
-    tcpdump \
     perfsonar-testpoint \
     && yum clean all \
     && rm -rf /var/cache/yum
@@ -45,7 +38,6 @@ RUN chown -R postgres:postgres /var/lib/pgsql/$PG_VERSION/data/*
 
 # End PostgreSQL Setup
 
-
 # -----------------------------------------------------------------------------
 
 #
@@ -59,30 +51,6 @@ RUN  /tmp/pscheduler-build-database && \
     rm -f /tmp/pscheduler-build-database
 
 # -----------------------------------------------------------------------------
-
-# Rsyslog
-# Note: need to modify default CentOS7 rsyslog configuration to work with Docker, 
-# as described here: http://www.projectatomic.io/blog/2014/09/running-syslog-within-a-docker-container/
-COPY rsyslog/rsyslog.conf /etc/rsyslog.conf
-COPY rsyslog/listen.conf /etc/rsyslog.d/listen.conf
-COPY rsyslog/python-pscheduler.conf /etc/rsyslog.d/python-pscheduler.conf
-COPY rsyslog/owamp-syslog.conf /etc/rsyslog.d/owamp-syslog.conf
-
-# -----------------------------------------------------------------------------
-
-# Systemd defines that it expects SIGRTMIN+3 for graceful shutdown
-# https://www.commandlinux.com/man-page/man1/systemd.1.html#lbAH
-STOPSIGNAL SIGRTMIN+3
-
-# setting systemd boot target
-# multi-user.target: analogous to runlevel 3, Text mode
-RUN systemctl set-default multi-user.target
-
-# those require extra volumes and capabilities to work, are they really necessary?
-# ref: http://libfuse.github.io/doxygen/
-# ref: https://wiki.debian.org/Hugepages
-# obs> masked is a stronger disabled state
-RUN systemctl mask dev-hugepages.mount sys-fs-fuse-connections.mount
 
 # The following ports are used:
 # pScheduler: 443
