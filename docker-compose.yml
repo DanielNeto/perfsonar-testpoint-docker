@@ -8,43 +8,19 @@ services:
     expose: 
       - "443"
       - "861"
+      - "862"
+      - "5000-5001"
+      - "5101"
+      - "5201"
       - "8760-9960"
+      - "18760-19960"
     network_mode: "host"
     restart: unless-stopped
     tmpfs: 
       - /run
-      - /run/lock
       - /tmp
     volumes:
       - /var/lib/pgsql
       - /var/log
-    privileged: true
-    tty: true
-  systemd:
-    build:
-      context: ./
-      dockerfile: Dockerfile-systemd
-    #cap_add: 
-    #  - SYS_ADMIN
-    environment: 
-      - container=docker
-    expose: 
-      - "443"
-      - "861"
-      - "8760-9960"
-    network_mode: "host"
-    restart: unless-stopped
-    security_opt: 
-      - seccomp:unconfined
-    tmpfs: 
-      - /run
-      - /run/lock
-      - /tmp
-    volumes:
-      - /var/lib/pgsql
-      - /var/log
-      - /sys/fs/cgroup:/sys/fs/cgroup:ro
-      #- /sys/fs/fuse/connections:/sys/fs/fuse/connections
-      #- /dev/hugepages:/dev/hugepages
     privileged: true
     tty: true
