@@ -23,9 +23,9 @@ After editing the configuration files, exit the container and commit the change.
 > docker commit -m "added config settings" containerID perfsonar/testpoint
 
 Run the container:
->docker run --privileged -d --tmpfs /tmp --tmpfs /run --net=host perfsonar/testpoint
+>docker run -d --tmpfs /run --tmpfs /tmp -v /sys/fs/cgroup:/sys/fs/cgroup:ro --cap-add SYS_PTRACE --net=host perfsonar/testpoint
 
-Run the container using docker-compose:
+Run the container using [docker-compose](https://docs.docker.com/compose/):
 >docker-compose up -d testpoint
 
 ## Testing

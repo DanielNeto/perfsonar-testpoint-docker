@@ -1,13 +1,12 @@
 # perfSONAR Testpoint
 
-FROM centos:centos7
+FROM danielneto/systemd:centos7
 LABEL maintainer="perfSONAR <perfsonar-user@perfsonar.net>"
 
 RUN yum -y install \
     epel-release \
     http://software.internet2.edu/rpms/el7/x86_64/latest/packages/perfSONAR-repo-0.9-1.noarch.rpm \
     && yum -y install \
-    supervisor \
     rsyslog \
     net-tools \
     sysstat \
@@ -72,23 +71,16 @@ COPY rsyslog/owamp-syslog.conf /etc/rsyslog.d/owamp-syslog.conf
 
 # -----------------------------------------------------------------------------
 
-RUN mkdir -p /var/log/supervisor 
-ADD supervisord.conf /etc/supervisord.conf
-
-COPY entrypoint.sh /usr/local/bin/
-
 # The following ports are used:
 # pScheduler: 443
-# owamp:861, 8760-9960
-# twamp: 862, 18760-19960
+# owamp:861, 8760-9960 (tcp and udp)
+# twamp: 862, 18760-19960 (tcp and udp)
 # simplestream: 5890-5900
 # nuttcp: 5000, 5101
 # iperf2: 5001
 # iperf3: 5201
-EXPOSE 443 861 862 5000-5001 5101 5201 8760-9960 18760-19960
+# ntp: 123 (udp)
+EXPOSE 123/udp 443 861 862 5000 5001 5101 5201 5890-5900 8760-9960/tcp 8760-9960/udp 18760-19960/tcp 18760-19960/udp
 
-# add logging, and postgres directory
-VOLUME ["/var/lib/pgsql", "/var/log"]
-
-ENTRYPOINT [ "entrypoint.sh" ]
-CMD /usr/bin/supervisord -c /etc/supervisord.conf
+# add pid directory, logging, and postgres directory
+VOLUME ["/var/lib/pgsql", "/var/log" ]
