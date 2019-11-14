@@ -3,8 +3,9 @@ services:
   testpoint:
     build:
       context: ./
-    #cap_add: 
-    #  - SYS_ADMIN
+    cap_add:
+      - SYS_ADMIN
+      - SYS_PTRACE
     environment: 
       - container=docker
     expose: 
@@ -22,7 +23,6 @@ services:
       - seccomp:unconfined
     tmpfs: 
       - /run
-      - /run/lock
       - /tmp
     volumes:
       - /var/lib/pgsql
@@ -30,5 +30,5 @@ services:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       #- /sys/fs/fuse/connections:/sys/fs/fuse/connections
       #- /dev/hugepages:/dev/hugepages
-    privileged: true
+    #privileged: true
     tty: true
