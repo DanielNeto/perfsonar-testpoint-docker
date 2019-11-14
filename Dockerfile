@@ -5,7 +5,7 @@ LABEL maintainer="perfSONAR <perfsonar-user@perfsonar.net>"
 
 RUN yum -y install \
     epel-release \
-    http://software.internet2.edu/rpms/el7/x86_64/latest/packages/perfSONAR-repo-0.9-1.noarch.rpm \
+    http://software.internet2.edu/rpms/el7/x86_64/4.2.1/packages/perfSONAR-repo-0.9-1.noarch.rpm \
     && yum -y install \
     rsyslog \
     net-tools \
