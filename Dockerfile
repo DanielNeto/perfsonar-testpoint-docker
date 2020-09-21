@@ -83,4 +83,4 @@ COPY rsyslog/owamp-syslog.conf /etc/rsyslog.d/owamp-syslog.conf
 EXPOSE 123/udp 443 861 862 5000 5001 5101 5201 5890-5900 8760-9960/tcp 8760-9960/udp 18760-19960/tcp 18760-19960/udp
 
 # add pid directory, logging, and postgres directory
-VOLUME ["/var/lib/pgsql", "/var/log" ]
+#VOLUME ["/var/lib/pgsql", "/var/log" ]
