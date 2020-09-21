@@ -67,7 +67,7 @@ COPY rsyslog/rsyslog.conf /etc/rsyslog.conf
 COPY rsyslog/listen.conf /etc/rsyslog.d/listen.conf
 COPY rsyslog/python-pscheduler.conf /etc/rsyslog.d/python-pscheduler.conf
 COPY rsyslog/owamp-syslog.conf /etc/rsyslog.d/owamp-syslog.conf
-
+COPY renew_cert.sh /renew_cert.sh
 
 # -----------------------------------------------------------------------------
 
@@ -84,3 +84,6 @@ EXPOSE 123/udp 443 861 862 5000 5001 5101 5201 5890-5900 8760-9960/tcp 8760-9960
 
 # add pid directory, logging, and postgres directory
 VOLUME ["/var/lib/pgsql", "/var/log" ]
+
+ENTRYPOINT ["/renew_cert.sh"]
+CMD ["/usr/sbin/init"]
